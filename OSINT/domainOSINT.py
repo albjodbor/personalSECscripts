@@ -11,10 +11,11 @@
 #General imports
 import argparse
 import sys
+import colorama
+from colorama import Fore, Back, Style
 
 #Specific libraries imports
 import dns.resolver
-
 
 #Description and arguments
 parser = argparse.ArgumentParser(
@@ -25,6 +26,17 @@ parser.add_argument("domain", help="domain name to investigate")
 argumentos = parser.parse_args()
 
 #Start
-print ("Initiating analysis for domain=[ " +argumentos.domain+ " ] ...\n")
+print ("\nInitiating analysis for domain=[ "
+ + Fore.RED + argumentos.domain + Style.RESET_ALL+ 
+ " ]...\n")
+
+#Configure google domain server
+print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
+	Fore.RED + "8.8.8.8" + Style.RESET_ALL + " nameserver\n")
+
+resolver = dns.resolver.Resolver(configure=False)
+resolver.nameservers = ['8.8.8.8']
 
 #Simple query
+answers = dns.resolver.query(argumentos.domain, 'A')
+print (answers)
