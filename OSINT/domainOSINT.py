@@ -18,37 +18,44 @@ from colorama import Fore, Back, Style
 import dns.resolver
 import dns.exception as DNSexception
 
-#Dictionary to translate queries in human code
-DNSqueries = {
-	"A":"IPv4", 
-	"AAAA":"IPv6", 
-	"MX":"Mailservers"
-	}
+#Class for store information about domain
+class DomainOSINT:
+	#Lists of singleDomains
+	IPv4List = []
+	IPv6List = []
+	Mailservers = []
+	DNSservers = []
 
-#Format answer of dns queries
-def formatAnswer (singleAnswer, queryType):
-	try:
-		answersResult = Fore.BLUE + "--> " + Style.RESET_ALL + DNSqueries[queryType] + ": " + Fore.BLUE + str(singleAnswer) + Style.RESET_ALL
-	except:
-		answersResult = ""
-	return answersResult
+	def __init__(self,domain):
+		self.domain = domain
 
+	def addIPv4 (self, ipv4):
+		self.IPv4List.append(ipv4)
+	def addIPv6 (self, ipv4):
+		self.IPv6List.append(ipv4)
+
+	def printBeautiful(self):
+		print ("TODO")
+
+#Store a simple domain/ip pair
+class singleDomain:
+	ip = ""
+	domain = ""
+	def __init__(self,domain,ip):
+		self.domain = domain
+		self.ip = ip
+		
 #Perform simple dns queries
 def singleQuery(domain, queryType):
-	#Lists to store results
-	PrintAnswerList = []
 	try:
-		answers = dns.resolver.query(domain, queryType)
-		for rdata in answers:
-			PrintAnswerList.append(formatAnswer(rdata, queryType))
+		answer = dns.resolver.query(domain, queryType)
 	except dns.resolver.Timeout:
-		PrintAnswerList.append(Fore.BLUE + "--> " + Style.RESET_ALL + DNSqueries[queryType] + ": " + Fore.RED + "Timeout!!" + Style.RESET_ALL)
+		answer= ["Timeout!!"]
 	except dns.resolver.NoAnswer:
-		PrintAnswerList.append(Fore.BLUE + "--> " + Style.RESET_ALL + DNSqueries[queryType] + ": " + Fore.RED + "No answer!!" + Style.RESET_ALL)
+		answer= ["No answer!!"]
 	except dns.resolver.NXDOMAIN:
-		PrintAnswerList.append(Fore.BLUE + "--> " + Style.RESET_ALL + DNSqueries[queryType] + ": " + Fore.RED + "No exits!!" + Style.RESET_ALL)
-
-	return PrintAnswerList
+		answer= ["No exits!!"]
+	return answer
 
 
 #Description and arguments
@@ -73,15 +80,16 @@ print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+
 resolver = dns.resolver.Resolver(configure=False)
 resolver.nameservers = ['8.8.8.8','8.8.4.4']
 
+#Create object for store results
+DomainOSINTObj = DomainOSINT(argumentos.domain)
+
 #Check IPv4
-answer = singleQuery(argumentos.domain, 'A')
-for entry in answer:
-	print (entry)
+for entry in singleQuery(argumentos.domain, 'A'):
+	DomainOSINTObj.addIPv4(str(entry))
 #Check IPv6
-answer = singleQuery(argumentos.domain, 'AAAA')
-for entry in answer:
-	print (entry)
-#Check MAIL
-answer = singleQuery(argumentos.domain, 'MX')
-for entry in answer:
-	print (entry)
+for entry in singleQuery(argumentos.domain, 'AAAA'):
+	DomainOSINTObj.addIPv6(str(entry))
+#Check MAIL --> MX
+#TODO
+#Check DNS server --> NS
+#TODO
