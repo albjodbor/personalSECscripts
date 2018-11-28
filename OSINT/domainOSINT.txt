@@ -1,0 +1,7 @@
+Install dependencies
+=================================
+pip3 install colorama
+git clone https://github.com/rthalley/dnspython
+python3 setup.py build
+sudo python3 setup.py install
+
