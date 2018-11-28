@@ -38,5 +38,12 @@ resolver = dns.resolver.Resolver(configure=False)
 resolver.nameservers = ['8.8.8.8']
 
 #Simple query
+#To-Do capture (timeout, NXDOMAIN, NoAnswer, NoNameservers)
+
+#Check IPv4
 answers = dns.resolver.query(argumentos.domain, 'A')
-print (answers)
+print (answers.rrset)
+
+#Check IPv6
+answers = dns.resolver.query(argumentos.domain, 'AAAA')
+print (answers.rrset)
