@@ -28,22 +28,26 @@ argumentos = parser.parse_args()
 #Start
 print ("\nInitiating analysis for domain=[ "
  + Fore.RED + argumentos.domain + Style.RESET_ALL+ 
- " ]...\n")
+ " ]...")
 
 #Configure google domain server
 print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
-	Fore.RED + "8.8.8.8" + Style.RESET_ALL + " nameserver\n")
+	Fore.RED + "8.8.8.8" + Style.RESET_ALL + " nameserver")
+print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
+	Fore.RED + "8.8.4.4" + Style.RESET_ALL + " nameserver")
 
 resolver = dns.resolver.Resolver(configure=False)
-resolver.nameservers = ['8.8.8.8']
+resolver.nameservers = ['8.8.8.8','8.8.4.4']
+
 
 #Simple query
 #To-Do capture (timeout, NXDOMAIN, NoAnswer, NoNameservers)
 
 #Check IPv4
 answers = dns.resolver.query(argumentos.domain, 'A')
-print (answers.rrset)
-
+for rdata in answers:
+	print (Fore.BLUE + "--> " + Style.RESET_ALL + "Ipv4 address: " + Fore.RED + str(rdata) + Style.RESET_ALL)
 #Check IPv6
 answers = dns.resolver.query(argumentos.domain, 'AAAA')
-print (answers.rrset)
+for rdata in answers:
+	print (Fore.BLUE + "--> " + Style.RESET_ALL + "Ipv6 address: " + Fore.RED + str(rdata) + Style.RESET_ALL)
