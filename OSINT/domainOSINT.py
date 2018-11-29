@@ -10,6 +10,7 @@
 
 #General imports
 import argparse
+import configparser
 import sys
 import colorama
 from colorama import Fore, Back, Style
@@ -17,6 +18,7 @@ from colorama import Fore, Back, Style
 #Specific libraries imports
 import dns.resolver
 import dns.exception as DNSexception
+import geoip2.webservice
 
 #Error strings
 errorString = ["Timeout!!", "No answer!!", "No exits!!"]
@@ -119,8 +121,6 @@ class DomainOSINT:
 					Fore.CYAN + dnsServer.ipv6 + 
 					Style.RESET_ALL)
 
-
-
 #Store a simple domain/ip pair
 class singleDomain:
 	ipv4 = ""
@@ -190,6 +190,10 @@ parser = argparse.ArgumentParser(
 parser.add_argument("domain", help="domain name to investigate")
 argumentos = parser.parse_args()
 
+#Configuration parser
+config = configparser.ConfigParser()
+
+
 #Start
 print ("\nInitiating analysis for domain=[ "
  + Fore.BLUE + argumentos.domain + Style.RESET_ALL+ 
@@ -221,6 +225,12 @@ for entry in singleQuery(argumentos.domain, 'CNAME'):
 mailQuery (argumentos.domain, DomainOSINTObj)
 #Check DNS server
 dnsQuery (argumentos.domain, DomainOSINTObj)
+
+#Whois information
+
+
+
+
 
 DomainOSINTObj.printBeautiful()
 
