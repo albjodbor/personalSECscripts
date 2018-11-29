@@ -41,6 +41,8 @@ class DomainOSINT:
 		self.canonicalName.append(canonical)
 	def addMail(self, domainObj):
 		self.Mailservers.append(domainObj)
+	def addDNS(self, domainObj):
+		self.DNSservers.append(domainObj)
 
 	def printBeautiful(self):
 		#Header message
@@ -98,6 +100,25 @@ class DomainOSINT:
 				print (Fore.BLUE + "------> " + 
 					Fore.CYAN + mailServer.ipv6 + 
 					Style.RESET_ALL)
+		#Print DNS servers list
+		print (Fore.BLUE + "--> " + Style.RESET_ALL + "Mail servers: ")
+		for dnsServer in self.DNSservers:
+			if dnsServer.domain in errorString:
+				print (Fore.BLUE + "----> " + 
+					Fore.RED + dnsServer.domain + 
+					Style.RESET_ALL)
+			else:
+				print (Fore.BLUE + "----> " + 
+					Fore.CYAN + dnsServer.domain + 
+					Style.RESET_ALL)
+				#Print its IPv4 and IPv6
+				print (Fore.BLUE + "------> " + 
+					Fore.CYAN + dnsServer.ipv4 + 
+					Style.RESET_ALL)
+				print (Fore.BLUE + "------> " + 
+					Fore.CYAN + dnsServer.ipv6 + 
+					Style.RESET_ALL)
+
 
 
 #Store a simple domain/ip pair
@@ -129,9 +150,9 @@ def mailQuery(domain, domainObject):
 	try:
 		answer = dns.resolver.query(domain, "MX")
 		for entry in answer:
-			mailIPv4 = singleQuery (str(entry[0], "A"))
-			mailIPv6 = singleQuery (str(entry[0], "AAAA"))
-			domainObj = singleDomain(str(entry[0], mailIPv4, mailIPv6))
+			mailIPv4 = singleQuery (str(entry[0]), "A")
+			mailIPv6 = singleQuery (str(entry[0]), "AAAA")
+			domainObj = singleDomain(str(entry[0]), mailIPv4, mailIPv6)
 			domainObject.addMail(domainObj)
 	except dns.resolver.Timeout:
 		domainObj = singleDomain("Timeout!!","","")
@@ -142,6 +163,24 @@ def mailQuery(domain, domainObject):
 	except dns.resolver.NXDOMAIN:
 		domainObj = singleDomain("No exits!!","","")
 		domainObject.addMail(domainObj)
+
+def dnsQuery(domain, domainObject):
+	try:
+		answer = dns.resolver.query(domain, "NS")
+		for entry in answer:
+			dnsIPv4 = singleQuery (str(entry[0]), "A")
+			dnsIPv6 = singleQuery (str(entry[0]), "AAAA")
+			domainObj = singleDomain(str(entry[0]), dnsIPv4, dnsIPv6)
+			domainObject.addDNS(domainObj)
+	except dns.resolver.Timeout:
+		domainObj = singleDomain("Timeout!!","","")
+		domainObject.addDNS(domainObj)
+	except dns.resolver.NoAnswer:
+		domainObj = singleDomain("No answer!!","","")
+		domainObject.addDNS(domainObj)
+	except dns.resolver.NXDOMAIN:
+		domainObj = singleDomain("No exits!!","","")
+		domainObject.addDNS(domainObj)
 
 #Description and arguments
 parser = argparse.ArgumentParser(
@@ -180,9 +219,8 @@ for entry in singleQuery(argumentos.domain, 'CNAME'):
 
 #Check MAIL
 mailQuery (argumentos.domain, DomainOSINTObj)
-
-#TODO: Check DNS server --> NS
-
+#Check DNS server
+dnsQuery (argumentos.domain, DomainOSINTObj)
 
 DomainOSINTObj.printBeautiful()
 
