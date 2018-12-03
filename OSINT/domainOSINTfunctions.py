@@ -8,6 +8,7 @@ from colorama import Fore, Back, Style
 #Specific libraries imports
 import dns.resolver
 import dns.exception as DNSexception
+import pythonwhois
 
 #Tool imports
 import domainOSINTdata
@@ -59,3 +60,8 @@ def elementQuery(domain, query):
 			print("No answer for query type: AAAA for domain: " + str(entry) )
 	
 	return returnedElement
+
+
+def domainWHOIS(domain):
+	whois = pythonwhois.get_whois(domain)
+	return whois

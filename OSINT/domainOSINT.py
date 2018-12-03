@@ -43,11 +43,6 @@ print("|   Domain OSINT investigation tool        |")
 print("|                 Author: Alberto Jodar    |")
 print("+------------------------------------------+")
 
-#Start
-print ("Initiating analysis for domain=[ "
- + Fore.BLUE + argumentos.domain + Style.RESET_ALL+ 
- " ]...")
-
 #Create object for store results
 DomainOSINTObj = domainOSINTdata.DomainOSINT(argumentos.domain)
 
@@ -60,16 +55,20 @@ for (key,nameserver) in config.items("NAMESERVERS"):
 	Fore.BLUE + nameserver + Style.RESET_ALL + " nameserver")
 resolver.nameservers = nameserverList
 
+#Start
+print ("Initiating analysis for domain=[ "
+ + Fore.BLUE + argumentos.domain + Style.RESET_ALL+ 
+ " ]...")
 
 #Check IPv4
 for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'A'):
 	if entry not in errorString:
-		address4object = domainOSINTdata.IPv4address(str(entry))
+		address4object = domainOSINTdata.IPaddress(str(entry), argumentos.domain)
 		DomainOSINTObj.addIPv4(address4object)
 #Check IPv6
 for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'AAAA'):
 	if entry not in errorString:
-		address6object = domainOSINTdata.IPv6address(str(entry))
+		address6object = domainOSINTdata.IPaddress(str(entry), argumentos.domain)
 		DomainOSINTObj.addIPv6(address6object)
 #Check Canonical name
 for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'CNAME'):
@@ -77,6 +76,18 @@ for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'CNAME'):
 
 
 DomainOSINTObj.printBeautiful()
+
+#Return JSON with whois information
+whoisDict = domainOSINTfunctions.domainWHOIS(argumentos.domain)
+#Get nameservers
+print (whoisDict["nameservers"])
+print (whoisDict["creation_date"])
+print (whoisDict["updated_date"])
+print (whoisDict["expiration_date"])
+
+
+
+
 
 
 

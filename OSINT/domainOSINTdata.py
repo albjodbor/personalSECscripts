@@ -8,6 +8,7 @@ from colorama import Fore, Back, Style
 #Specific libraries imports
 import dns.resolver
 import dns.exception as DNSexception
+import pythonwhois
 
 #Tool imports
 import domainOSINTfunctions
@@ -46,7 +47,7 @@ class DomainOSINT:
 		for ipv6addess in self.IPv6List:
 			print ("--> IPV6: "+ ipv6addess.ip)
 
-#Store a simple domain/ip pair
+#Store a domain element and its related information
 class domainElement:
 	ipv4 = []
 	ipv6 = []
@@ -65,17 +66,11 @@ class domainElement:
 	def simplePrint(self):
 		print (self.domain + " " + self.ipv4 + " " + self.ipv6 + " ")
 
-#Ipv4 adress class
-class IPv4address:
+#Class to store a single ip/name address and its metadata
+class IPaddress:
 	ip =""
-	def __init__(self,ipv4):
-		self.ip=ipv4
-
-
-#Ipv6 adress class
-class IPv6address:
-	ip =""
-	def __init__(self,ipv6):
-		self.ip=ipv6
-
+	name=""
+	def __init__(self,ip, name):
+		self.ip=ip
+		self.name =name
 	
