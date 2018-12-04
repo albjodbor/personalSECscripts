@@ -61,7 +61,24 @@ def elementQuery(domain, query):
 	
 	return returnedElement
 
-
-def domainWHOIS(domain):
+#Perform a whois search of a domain and store relevant data
+def domainWHOIS(domain, storedObject):
 	whois = pythonwhois.get_whois(domain)
-	return whois
+	
+	#Store DNS information
+	for nameserver in whois["nameservers"]:
+		nameserverIPv4 = singleQuery(nameserver, 'A')
+		nameserverIPv6 = singleQuery(nameserver, 'AAAA')
+		NSDomainElement = domainOSINTdata.domainElement (nameserver, str(nameserverIPv4[0]), str(nameserverIPv6[0]))
+		storedObject.addDNS(NSDomainElement)
+
+	#Store creation, update and expiration dates
+	whois["creation_date"]
+	whois["updated_date"]
+	whois["expiration_date"]
+	#TODO: Store this information in the object
+
+
+
+
+

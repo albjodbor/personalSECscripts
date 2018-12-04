@@ -48,11 +48,22 @@ DomainOSINTObj = domainOSINTdata.DomainOSINT(argumentos.domain)
 
 resolver = dns.resolver.Resolver(configure=False)
 
+#Obtain information from whois
+#Fill object with whois information
+domainOSINTfunctions.domainWHOIS(argumentos.domain, DomainOSINTObj)
+
+#Use specific dns plus static dns list
 nameserverList=[]
 for (key,nameserver) in config.items("NAMESERVERS"):
 	nameserverList.append(nameserver)
 	print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
 	Fore.BLUE + nameserver + Style.RESET_ALL + " nameserver")
+
+for nameserverObj in DomainOSINTObj.DNSservers:
+	nameserverList.append(nameserverObj.ipv4)
+	print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
+	Fore.BLUE + nameserverObj.ipv4 + Style.RESET_ALL + " nameserver")
+
 resolver.nameservers = nameserverList
 
 #Start
@@ -77,13 +88,7 @@ for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'CNAME'):
 
 DomainOSINTObj.printBeautiful()
 
-#Return JSON with whois information
-whoisDict = domainOSINTfunctions.domainWHOIS(argumentos.domain)
-#Get nameservers
-print (whoisDict["nameservers"])
-print (whoisDict["creation_date"])
-print (whoisDict["updated_date"])
-print (whoisDict["expiration_date"])
+
 
 
 

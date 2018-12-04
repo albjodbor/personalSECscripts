@@ -49,16 +49,13 @@ class DomainOSINT:
 
 #Store a domain element and its related information
 class domainElement:
-	ipv4 = []
-	ipv6 = []
+	ipv4 = ""
+	ipv6 = ""
 	name = ""
 	def __init__(self,domain,ipv4, ipv6):
 		self.name = domain
 		self.ipv4 = ipv4
 		self.ipv6 = ipv6
-
-	def __init__(self,domain):
-		self.name = domain
 
 	def addIPv4 (self, ipv4):
 		self.ipv4.append(ipv4)
