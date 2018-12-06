@@ -24,6 +24,9 @@ class DomainOSINT:
 	canonicalName = []
 	Mailservers = []
 	DNSservers = []
+	creationDate = None
+	updateDate = None
+	expirationDate = None
 
 	def __init__(self,domain):
 		self.domain = domain
@@ -42,10 +45,17 @@ class DomainOSINT:
 	def printBeautiful(self):
 		#Print IPv4 List
 		for ipv4addess in self.IPv4List:
-			print ("--> IPV4: "+ ipv4addess.ip)
+			print ("--> IPV4: "+ Fore.BLUE + ipv4addess.ip + Style.RESET_ALL)
 		#Print IPv6 List
 		for ipv6addess in self.IPv6List:
-			print ("--> IPV6: "+ ipv6addess.ip)
+			print ("--> IPV6: "+ Fore.BLUE + ipv6addess.ip + Style.RESET_ALL)
+		#Nameservers
+		for nameserver in self.DNSservers:
+			print ("--> Nameserver: "+ Fore.BLUE + nameserver.name + Style.RESET_ALL)
+			if nameserver.ipv4 != "":
+				print ("----> IPv4: "+ Fore.CYAN + nameserver.ipv4 + Style.RESET_ALL)
+			if nameserver.ipv6 != "":
+				print ("----> IPv6: "+ Fore.CYAN + nameserver.ipv6 + Style.RESET_ALL)
 
 #Store a domain element and its related information
 class domainElement:

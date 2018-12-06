@@ -17,6 +17,8 @@ from colorama import Fore, Back, Style
 #Specific libraries imports
 import dns.resolver
 import dns.exception as DNSexception
+import dns.zone
+import dns.query
 
 #Tool imports
 import domainOSINTfunctions
@@ -49,7 +51,6 @@ DomainOSINTObj = domainOSINTdata.DomainOSINT(argumentos.domain)
 resolver = dns.resolver.Resolver(configure=False)
 
 #Obtain information from whois
-#Fill object with whois information
 domainOSINTfunctions.domainWHOIS(argumentos.domain, DomainOSINTObj)
 
 #Use specific dns plus static dns list
@@ -58,12 +59,10 @@ for (key,nameserver) in config.items("NAMESERVERS"):
 	nameserverList.append(nameserver)
 	print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
 	Fore.BLUE + nameserver + Style.RESET_ALL + " nameserver")
-
 for nameserverObj in DomainOSINTObj.DNSservers:
 	nameserverList.append(nameserverObj.ipv4)
 	print (Fore.BLUE + "+ " + Style.RESET_ALL + "Using "+ 
 	Fore.BLUE + nameserverObj.ipv4 + Style.RESET_ALL + " nameserver")
-
 resolver.nameservers = nameserverList
 
 #Start
@@ -85,8 +84,21 @@ for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'AAAA'):
 for entry in domainOSINTfunctions.singleQuery(argumentos.domain, 'CNAME'):
 	DomainOSINTObj.addCanonical(str(entry))
 
-
 DomainOSINTObj.printBeautiful()
+
+#Trying DNS zone transfer
+#Except: dns.zone.NoSOA
+#Except: dns.zone.NoNS 
+for dns_server in DomainOSINTObj.DNSservers:
+	print ("Trying DNS transfer for: " + dns_server.ipv4)
+	try:
+		result_zone = dns.zone.from_xfr(dns.query.xfr(dns_server.ipv4, argumentos.domain))
+		print (result_zone)
+	except:
+		print (Fore.RED + "Not possible!!" + Style.RESET_ALL)
+	
+
+
 
 
 

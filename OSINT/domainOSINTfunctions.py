@@ -73,10 +73,9 @@ def domainWHOIS(domain, storedObject):
 		storedObject.addDNS(NSDomainElement)
 
 	#Store creation, update and expiration dates
-	whois["creation_date"]
-	whois["updated_date"]
-	whois["expiration_date"]
-	#TODO: Store this information in the object
+	storedObject.creationDate = whois["creation_date"]
+	storedObject.updateDate = whois["updated_date"]
+	storedObject.expirationDate = whois["expiration_date"]
 
 
 
