@@ -9,6 +9,7 @@ from colorama import Fore, Back, Style
 import dns.resolver
 import dns.exception as DNSexception
 import pythonwhois
+import pygeoip
 
 #Tool imports
 import domainOSINTdata
@@ -25,6 +26,7 @@ def singleQuery(domain, queryType):
 		answer= ["No exits!!"]
 	return answer
 
+#Perform recursive queries for domain elements
 def elementQuery(domain, query):
 	returnedElement = domainOSINTdata.domainElement(domain)
 

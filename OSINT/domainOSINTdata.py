@@ -43,12 +43,24 @@ class DomainOSINT:
 		self.DNSservers.append(domainObj)
 
 	def printBeautiful(self):
+		#Print domain whois info
+		print ("-->Creation: " + Fore.BLUE + str(self.creationDate[0]) + Style.RESET_ALL)
+		print ("-->Update: " + Fore.BLUE + str(self.updateDate[0]) + Style.RESET_ALL)
+		print ("-->Expiration: " + Fore.BLUE + str(self.expirationDate[0]) + Style.RESET_ALL)
 		#Print IPv4 List
 		for ipv4addess in self.IPv4List:
 			print ("--> IPV4: "+ Fore.BLUE + ipv4addess.ip + Style.RESET_ALL)
+			if ipv4addess.country is not None:
+				print ("----> Country: " + Fore.MAGENTA + ipv4addess.country + Style.RESET_ALL)
+			else:
+				print ("----> Country: " + Fore.RED + "None" + Style.RESET_ALL)
 		#Print IPv6 List
 		for ipv6addess in self.IPv6List:
 			print ("--> IPV6: "+ Fore.BLUE + ipv6addess.ip + Style.RESET_ALL)
+			if ipv6addess.country is not None:
+				print ("----> Country: " + Fore.MAGENTA + ipv6addess.country + Style.RESET_ALL)
+			else:
+				print ("----> Country: " + Fore.RED + "None" + Style.RESET_ALL)
 		#Nameservers
 		for nameserver in self.DNSservers:
 			print ("--> Nameserver: "+ Fore.BLUE + nameserver.name + Style.RESET_ALL)
@@ -59,9 +71,11 @@ class DomainOSINT:
 
 #Store a domain element and its related information
 class domainElement:
-	ipv4 = ""
-	ipv6 = ""
+	ipv4 = None
+	ipv6 = None
 	name = ""
+	transfer = False
+	country = None
 	def __init__(self,domain,ipv4, ipv6):
 		self.name = domain
 		self.ipv4 = ipv4
@@ -77,6 +91,7 @@ class domainElement:
 class IPaddress:
 	ip =""
 	name=""
+	country = None
 	def __init__(self,ip, name):
 		self.ip=ip
 		self.name =name
