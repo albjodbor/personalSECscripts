@@ -14,8 +14,21 @@ import pygeoip
 #Tool imports
 import domainOSINTdata
 
-#Perform simple dns queries
+
+def domainWHOIS(domain):
+	"""Obtain whois information from a domain
+		Arguments:
+			domain --> Doamin to be investigated
+	"""
+	whois = pythonwhois.get_whois(domain)
+	return whois
+
 def singleQuery(domain, queryType):
+	"""Perform simple DNS query
+		Arguments:
+			domain --> Domain to perform query
+			queryType --> Query Type (A, AAAA...)
+	"""
 	try:
 		answer = dns.resolver.query(domain, queryType)
 	except dns.resolver.Timeout:
@@ -24,7 +37,18 @@ def singleQuery(domain, queryType):
 		answer= ["No answer!!"]
 	except dns.resolver.NXDOMAIN:
 		answer= ["No exits!!"]
+
 	return answer
+
+
+
+
+
+
+
+
+
+
 
 #Perform recursive queries for domain elements
 def elementQuery(domain, query):
@@ -63,21 +87,6 @@ def elementQuery(domain, query):
 	
 	return returnedElement
 
-#Perform a whois search of a domain and store relevant data
-def domainWHOIS(domain, storedObject):
-	whois = pythonwhois.get_whois(domain)
-	
-	#Store DNS information
-	for nameserver in whois["nameservers"]:
-		nameserverIPv4 = singleQuery(nameserver, 'A')
-		nameserverIPv6 = singleQuery(nameserver, 'AAAA')
-		NSDomainElement = domainOSINTdata.domainElement (nameserver, str(nameserverIPv4[0]), str(nameserverIPv6[0]))
-		storedObject.addDNS(NSDomainElement)
-
-	#Store creation, update and expiration dates
-	storedObject.creationDate = whois["creation_date"]
-	storedObject.updateDate = whois["updated_date"]
-	storedObject.expirationDate = whois["expiration_date"]
 
 
 

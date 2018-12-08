@@ -16,6 +16,28 @@ import domainOSINTfunctions
 #Error strings
 errorString = ["Timeout!!", "No answer!!", "No exits!!"]
 
+#Store a domain element and its related information
+class domainElement:
+	DomainName = None
+	AddressIPv4 = []
+	AddressIPv6 = []
+	PossibleTransfer = False
+
+	def __init__(self,domain):
+		self.DomainName = domain
+
+	def simplePrint(self):
+		print (self.domain + " " + self.ipv4 + " " + self.ipv6 + " ")
+
+#Class to store a single ip/name address and its metadata
+class IPaddress:
+	IPAddress = None
+	country = None
+
+	def __init__(self,ip):
+		self.IPAddress=ip
+
+
 #Class for store information about domain
 class DomainOSINT:
 	#Lists of singleDomains
@@ -43,56 +65,50 @@ class DomainOSINT:
 		self.DNSservers.append(domainObj)
 
 	def printBeautiful(self):
-		#Print domain whois info
+		#Print Canonical name
+		for name in self.canonicalName:
+			if name not in errorString:
+				print ("-->Canonical name: " + Fore.BLUE + name + Style.RESET_ALL)
+			else:
+				print ("-->Canonical name: " + Fore.RED + name + Style.RESET_ALL)
+
+		#Print whois date
 		print ("-->Creation: " + Fore.BLUE + str(self.creationDate[0]) + Style.RESET_ALL)
 		print ("-->Update: " + Fore.BLUE + str(self.updateDate[0]) + Style.RESET_ALL)
 		print ("-->Expiration: " + Fore.BLUE + str(self.expirationDate[0]) + Style.RESET_ALL)
+
 		#Print IPv4 List
 		for ipv4addess in self.IPv4List:
-			print ("--> IPV4: "+ Fore.BLUE + ipv4addess.ip + Style.RESET_ALL)
+			print ("--> IPV4: "+ Fore.BLUE + ipv4addess.IPAddress + Style.RESET_ALL)
 			if ipv4addess.country is not None:
 				print ("----> Country: " + Fore.MAGENTA + ipv4addess.country + Style.RESET_ALL)
 			else:
 				print ("----> Country: " + Fore.RED + "None" + Style.RESET_ALL)
 		#Print IPv6 List
 		for ipv6addess in self.IPv6List:
-			print ("--> IPV6: "+ Fore.BLUE + ipv6addess.ip + Style.RESET_ALL)
+			print ("--> IPV6: "+ Fore.BLUE + ipv6addess.IPAddress + Style.RESET_ALL)
 			if ipv6addess.country is not None:
 				print ("----> Country: " + Fore.MAGENTA + ipv6addess.country + Style.RESET_ALL)
 			else:
 				print ("----> Country: " + Fore.RED + "None" + Style.RESET_ALL)
-		#Nameservers
+		#Print Nameservers
 		for nameserver in self.DNSservers:
 			print ("--> Nameserver: "+ Fore.BLUE + nameserver.name + Style.RESET_ALL)
-			if nameserver.ipv4 != "":
-				print ("----> IPv4: "+ Fore.CYAN + nameserver.ipv4 + Style.RESET_ALL)
-			if nameserver.ipv6 != "":
-				print ("----> IPv6: "+ Fore.CYAN + nameserver.ipv6 + Style.RESET_ALL)
+			for address in nameserver.AddressIPv4:
+				print ("----> IPv4: "+ Fore.CYAN + address.IPAddress + Style.RESET_ALL)
+				if address.country is not None:
+					print ("------> Country: " + Fore.MAGENTA + address.country + Style.RESET_ALL)
+				else:
+					print ("------> Country: " + Fore.RED + "None" + Style.RESET_ALL)
+			for address in nameserver.AddressIPv6:
+				print ("----> IPv6: "+ Fore.CYAN + address.IPAddress + Style.RESET_ALL)
+				if address.country is not None:
+					print ("------> Country: " + Fore.MAGENTA + address.country + Style.RESET_ALL)
+				else:
+					print ("------> Country: " + Fore.RED + "None" + Style.RESET_ALL)
+			if nameserver.PossibleTransfer == True:
+				print ("----> Possible Zone Transfer: " + Fore.BLUE + "True!!" + tyle.RESET_ALL)
+			else:
+				print ("----> Possible Zone Transfer: " + Fore.RED + "False!!" + tyle.RESET_ALL)
 
-#Store a domain element and its related information
-class domainElement:
-	ipv4 = None
-	ipv6 = None
-	name = ""
-	transfer = False
-	country = None
-	def __init__(self,domain,ipv4, ipv6):
-		self.name = domain
-		self.ipv4 = ipv4
-		self.ipv6 = ipv6
-
-	def addIPv4 (self, ipv4):
-		self.ipv4.append(ipv4)
-
-	def simplePrint(self):
-		print (self.domain + " " + self.ipv4 + " " + self.ipv6 + " ")
-
-#Class to store a single ip/name address and its metadata
-class IPaddress:
-	ip =""
-	name=""
-	country = None
-	def __init__(self,ip, name):
-		self.ip=ip
-		self.name =name
 	
